@@ -239,7 +239,19 @@ def dump_yaml_scalar(value: Any) -> str:
     text = str(value)
     if text == "":
         return "''"
-    if re.fullmatch(r"[A-Za-z0-9._/-]+", text):
+    if (
+        text == text.strip()
+        and "\n" not in text
+        and "\r" not in text
+        and "\t" not in text
+        and text[0] not in "-?:,[]{}#&*!|>'\"%@`"
+        and not re.fullmatch(r"true|false|null|~", text, re.IGNORECASE)
+        and not re.fullmatch(r"-?\d+", text)
+        and not re.fullmatch(r"-?\d+\.\d+", text)
+        and ": " not in text
+        and not text.endswith(":")
+        and " #" not in text
+    ):
         return text
     return "'" + text.replace("'", "''") + "'"
 
